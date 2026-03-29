@@ -1,28 +1,8 @@
-use std::{
-    fmt,
-    io::{self, Write},
-};
-
 use crate::core::command_processor;
+use crate::error::InterfaceError;
+use std::io::{self, Write};
 
-#[derive(Debug)]
-pub enum Error
-{
-    InvalidInput(String),
-}
-
-impl fmt::Display for Error
-{
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-    {
-        match self
-        {
-            Error::InvalidInput(msg) => writeln!(f, "{}", msg),
-        }
-    }
-}
-
-pub fn read_line() -> Result<(), Error>
+pub fn read_line() -> Result<(), InterfaceError>
 {
     print!("db > ");
     io::stdout().flush().unwrap();
@@ -30,10 +10,15 @@ pub fn read_line() -> Result<(), Error>
 
     if let Err(e) = io::stdin().read_line(&mut buffer)
     {
-        return Err(Error::InvalidInput(e.to_string()));
+        return Err(InterfaceError::InvalidInput(e.to_string()));
     }
 
-    command_processor::process_command(buffer.trim());
+    if buffer.trim().is_empty()
+    {
+        return Err(InterfaceError::EmptyInput);
+    }
+
+    command_processor::process_command(buffer.trim())?;
 
     Ok(())
 }

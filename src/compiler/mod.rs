@@ -1,21 +1,18 @@
+use crate::error::AppError;
 mod code_generator;
 mod parser;
 mod tokenizer;
 
-pub fn select_querry(command: &str)
+pub fn select_querry(command: &str) -> Result<(), AppError>
 {
     let tokens = tokenizer::tokenize(command);
-    for a in tokens
-    {
-        println!("token {:?}", a);
-    }
+
+    Ok(())
 }
 
-pub fn insert_querry(command: &str)
+pub fn insert_querry(command: &str) -> Result<(), AppError>
 {
     let tokens = tokenizer::tokenize(command);
-    for a in tokens
-    {
-        println!("token {:?}", a);
-    }
+
+    Ok(())
 }

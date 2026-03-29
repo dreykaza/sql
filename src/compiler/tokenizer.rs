@@ -1,18 +1,18 @@
-#[derive(Debug)]
+#[derive(PartialEq)]
 pub enum Keyword
 {
     Select,
     Insert,
 }
 
-#[derive(Debug)]
+#[derive(PartialEq)]
 pub enum Value
 {
     Email(String),
     Time(i32),
 }
 
-#[derive(Debug)]
+#[derive(PartialEq)]
 pub enum Token
 {
     Keyword(Keyword),

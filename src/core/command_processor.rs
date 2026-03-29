@@ -1,36 +1,29 @@
+use crate::compiler;
+use crate::error::{AppError, InterfaceError};
 use std::process;
 
-use crate::compiler;
-
-pub fn process_command(command: &str)
+pub fn process_command(command: &str) -> Result<(), AppError>
 {
     let instruction = command.split_whitespace().next().unwrap();
 
     if command.starts_with('.')
     {
-        meta_commands(&command);
+        meta_commands(&command)?;
     }
 
-    if command.split_whitespace().count() < 3
+    match instruction
     {
-        println!("Not enoght arguments");
-        return;
-    }
-
-    if instruction == "insert"
-    {}
-
-    if instruction == "select"
-    {
-        compiler::select_querry(command);
+        "insert" => compiler::insert_querry(command),
+        "select" => compiler::select_querry(command),
+        _ => Err(InterfaceError::InvalidInput(instruction.to_string()))?,
     }
 }
 
-fn meta_commands(command: &str)
+fn meta_commands(command: &str) -> Result<(), InterfaceError>
 {
     match command
     {
         ".exit" => process::exit(0),
-        _ => println!("Not a command!"),
+        _ => Err(InterfaceError::InvalidInput(command.to_string())),
     }
 }
