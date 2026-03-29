@@ -1,6 +1,6 @@
 mod core;
 use crate::core::interface;
-
+mod compiler;
 fn main()
 {
     loop
@@ -11,4 +11,3 @@ fn main()
         }
     }
 }
-

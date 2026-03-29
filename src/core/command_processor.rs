@@ -1,22 +1,28 @@
 use std::process;
 
+use crate::compiler;
+
 pub fn process_command(command: &str)
 {
+    let instruction = command.split_whitespace().next().unwrap();
+
     if command.starts_with('.')
     {
         meta_commands(&command);
     }
 
-    let mut instruction = command.split_whitespace();
-
     if command.split_whitespace().count() < 3
     {
         println!("Not enoght arguments");
+        return;
     }
 
-    if instruction.next().unwrap() == "insert"
+    if instruction == "insert"
+    {}
+
+    if instruction == "select"
     {
-        println!("inserting {}", instruction.next().unwrap());
+        compiler::select_querry(command);
     }
 }
 
