@@ -1,18 +1,19 @@
-use crate::error::AppError;
+use crate::error::CompilerError;
 mod code_generator;
+mod lexer;
 mod parser;
-mod tokenizer;
+mod token;
 
-pub fn select_querry(command: &str) -> Result<(), AppError>
+pub fn select_querry(command: &str) -> Result<(), CompilerError>
 {
-    let tokens = tokenizer::tokenize(command);
+    let tokens = lexer::tokenize(command);
 
     Ok(())
 }
 
-pub fn insert_querry(command: &str) -> Result<(), AppError>
+pub fn insert_querry(command: &str) -> Result<(), CompilerError>
 {
-    let tokens = tokenizer::tokenize(command);
+    let tokens = lexer::tokenize(command);
 
     Ok(())
 }

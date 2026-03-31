@@ -1,8 +1,8 @@
 use crate::core::command_processor;
-use crate::error::InterfaceError;
+use crate::error::{AppError, InterfaceError};
 use std::io::{self, Write};
 
-pub fn read_line() -> Result<(), InterfaceError>
+pub fn read_line()
 {
     print!("db > ");
     io::stdout().flush().unwrap();
@@ -10,15 +10,25 @@ pub fn read_line() -> Result<(), InterfaceError>
 
     if let Err(e) = io::stdin().read_line(&mut buffer)
     {
-        return Err(InterfaceError::InvalidInput(e.to_string()));
+        error_handler(AppError::InterfaceError(InterfaceError::InvalidInput(
+            e.to_string(),
+        )));
+        return;
     }
 
     if buffer.trim().is_empty()
     {
-        return Err(InterfaceError::EmptyInput);
+        error_handler(AppError::InterfaceError(InterfaceError::EmptyInput));
+        return;
     }
 
-    command_processor::process_command(buffer.trim())?;
+    if let Err(e) = command_processor::process_command(buffer.trim())
+    {
+        error_handler(e);
+    }
+}
 
-    Ok(())
+fn error_handler(error: AppError)
+{
+    println!("{}", error)
 }

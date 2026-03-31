@@ -1,5 +1,5 @@
 use crate::{
-    compiler::tokenizer::{Keyword, Token},
+    compiler::token::{Keyword, Token},
     error::ParserError,
 };
 
