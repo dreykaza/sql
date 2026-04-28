@@ -8,8 +8,8 @@ pub enum Keyword
 #[derive(PartialEq)]
 pub enum Value
 {
-    Email(String),
-    Time(i32),
+    String(String),
+    Number(i32),
 }
 
 #[derive(PartialEq)]
@@ -17,4 +17,5 @@ pub enum Token
 {
     Keyword(Keyword),
     Value(Value),
+    EOF,
 }

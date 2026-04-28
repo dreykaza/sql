@@ -1,4 +1,4 @@
-use crate::compiler::token::{Keyword, Token, Value};
+use crate::compiler::types::token::{Keyword, Token, Value};
 
 pub fn tokenize(command: &str) -> Vec<Token>
 {
@@ -14,12 +14,14 @@ pub fn tokenize(command: &str) -> Vec<Token>
             {
                 match part.parse()
                 {
-                    Ok(n) => tokens.push(Token::Value(Value::Time(n))),
-                    Err(_) => tokens.push(Token::Value(Value::Email(part.to_string()))),
+                    Ok(n) => tokens.push(Token::Value(Value::Number(n))),
+                    Err(_) => tokens.push(Token::Value(Value::String(part.to_string()))),
                 };
             }
         }
     }
+
+    tokens.push(Token::EOF);
 
     tokens
 }

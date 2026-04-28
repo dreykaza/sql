@@ -1,7 +1,9 @@
 use crate::{
-    compiler::token::{Keyword, Token},
+    compiler::types::token::{Keyword, Token},
     error::ParserError,
 };
+
+impl Token {}
 
 fn select_parse(tokens: Vec<Token>) {}
 
