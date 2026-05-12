@@ -1,4 +1,4 @@
-use crate::compiler::types::token::{Keyword, Value};
+use crate::compiler::types::token::{Grammar, Keyword, Value};
 
 struct Tree
 {
@@ -6,9 +6,18 @@ struct Tree
     children: Vec<Child>,
 }
 
+struct From
+{
+    table: String,
+}
+
+struct Columns
+{
+    colums: Vec<String>,
+}
+
 enum Child
 {
-    From(String),
-    Column(Vec<String>),
+    From(Grammar),
     Values(Vec<Value>),
 }

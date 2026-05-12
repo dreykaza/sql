@@ -25,6 +25,25 @@ pub enum CompilerError
 {
     #[error("Parser Error: {0}")]
     Parser(#[from] ParserError),
+
+    #[error("Lexer Error: {0}")]
+    Lexer(#[from] LexerError),
+}
+
+#[derive(Error, Debug)]
+pub enum LexerError
+{
+    #[error("{0} Is not a Identifier")]
+    GrammarError(String),
+
+    #[error("Unterminated String")]
+    UnterminatedString,
+
+    #[error("Find string inside a number")]
+    CorruptedNumber,
+
+    #[error("Find number inside a identifier")]
+    CorruptedIdentifier,
 }
 
 #[derive(Error, Debug)]

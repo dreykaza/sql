@@ -13,8 +13,8 @@ pub fn process_command(command: &str) -> Result<(), AppError>
 
     match instruction
     {
-        "insert" => compiler::insert_querry(command)?,
-        "select" => compiler::select_querry(command)?,
+        // "insert" => compiler::insert_querry(command)?,
+        // "select" => compiler::select_querry(command)?,
         _ => Err(InterfaceError::InvalidInput(instruction.to_string()))?,
     }
 }
