@@ -1,29 +1,30 @@
-#[derive(PartialEq)]
-pub enum Keyword
+#[derive(PartialEq, Debug)]
+pub enum Keyword<'a>
 {
     Select,
     Insert,
+    Identifier(&'a str),
 }
 
-#[derive(PartialEq)]
-pub enum Value
+#[derive(PartialEq, Debug)]
+pub enum Value<'a>
 {
-    String(String),
+    String(&'a str),
     Number(i32),
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum Grammar
 {
     From,
     Column,
 }
 
-#[derive(PartialEq)]
-pub enum Token
+#[derive(PartialEq, Debug)]
+pub enum Token<'a>
 {
-    Keyword(Keyword),
+    Keyword(Keyword<'a>),
     Grammar(Grammar),
-    Value(Value),
+    Value(Value<'a>),
     EOF,
 }

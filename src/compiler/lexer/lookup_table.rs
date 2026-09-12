@@ -1,21 +1,20 @@
-use crate::{
-    compiler::types::token::{Grammar, Keyword, Token},
-    error::LexerError,
-};
+use crate::compiler::types::token::{Grammar, Keyword, Token};
 
 pub struct Keywords;
 
-impl Keywords
+impl<'a> Keywords
 {
-    pub fn lookup(word: &str) -> Result<Token, LexerError>
+    pub fn lookup(word: &'a str) -> Token<'a>
     {
-        match word
+        let lower = word.to_ascii_lowercase();
+
+        match lower.as_str()
         {
-            "insert" => Ok(Token::Keyword(Keyword::Insert)),
-            "select" => Ok(Token::Keyword(Keyword::Select)),
-            "from" => Ok(Token::Grammar(Grammar::From)),
-            "column" => Ok(Token::Grammar(Grammar::Column)),
-            _ => Err(LexerError::GrammarError(word.to_string())),
+            "insert" => Token::Keyword(Keyword::Insert),
+            "select" => Token::Keyword(Keyword::Select),
+            "from" => Token::Grammar(Grammar::From),
+            "column" => Token::Grammar(Grammar::Column),
+            _ => Token::Keyword(Keyword::Identifier(word)),
         }
     }
 }

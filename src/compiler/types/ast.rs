@@ -1,9 +1,9 @@
 use crate::compiler::types::token::{Grammar, Keyword, Value};
 
-struct Tree
+pub struct Tree<'a>
 {
-    keyword: Keyword,
-    children: Vec<Child>,
+    pub keyword: Keyword<'a>,
+    pub children: Vec<Child<'a>>,
 }
 
 struct From
@@ -16,8 +16,8 @@ struct Columns
     colums: Vec<String>,
 }
 
-enum Child
+pub enum Child<'a>
 {
     From(Grammar),
-    Values(Vec<Value>),
+    Values(Vec<Value<'a>>),
 }

@@ -39,11 +39,14 @@ pub enum LexerError
     #[error("Unterminated String")]
     UnterminatedString,
 
-    #[error("Find string inside a number")]
-    CorruptedNumber,
+    #[error("Too big number")]
+    Overflow,
 
-    #[error("Find number inside a identifier")]
-    CorruptedIdentifier,
+    #[error("Invalid simbol at {0}")]
+    InvalidSimbol(usize),
+
+    #[error("Find chars inside a number at {0}")]
+    CorruptedNumber(usize),
 }
 
 #[derive(Error, Debug)]
@@ -51,4 +54,10 @@ pub enum ParserError
 {
     #[error("Too many keywords!")]
     TooManyKeywords,
+
+    #[error("{0}")]
+    SyntaxError(String),
+
+    #[error("Empty Input")]
+    UnexpectedEOF,
 }

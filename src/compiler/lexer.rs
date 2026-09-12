@@ -5,33 +5,56 @@ use crate::{
     },
     error::LexerError,
 };
+use std::cell::Cell;
 use std::iter::Peekable;
 use std::str::Chars;
 
 mod lookup_table;
 
-struct Lexer;
-
-impl Lexer
+pub struct Lexer<'a>
 {
-    pub fn tokenize(&mut self, input: String) -> Result<Vec<Token>, LexerError>
+    input: &'a str,
+    pos: Cell<usize>,
+}
+
+impl<'a> Lexer<'a>
+{
+    pub fn new(input: &'a str) -> Self
+    {
+        Lexer {
+            input: input,
+            pos: 0.into(),
+        }
+    }
+
+    pub fn tokenize(&mut self) -> Result<Vec<Token<'a>>, LexerError>
     {
         let mut tokens: Vec<Token> = vec![];
-        let mut iter = input.chars().peekable();
+        let mut iter = self.input.chars().peekable();
 
         while let Some(&ch) = iter.peek()
         {
             match ch
             {
-                '"' => tokens.push(Token::Value(Value::String(Self::read_string(&mut iter)?))),
-                '0'..='9' => tokens.push(Token::Value(Value::Number(
-                    Self::read_number(&mut iter)?.parse().unwrap(),
-                ))),
-                'a'..='z' | 'A'..='Z' => tokens.push(Self::read_identifier(&mut iter)?),
-                _ =>
+                '"' =>
+                {
+                    tokens.push(Token::Value(Value::String(Self::read_string(
+                        self, &mut iter,
+                    )?)));
+                    self.advance();
+                }
+                '0'..='9' => match Self::read_number(self, &mut iter)?.parse::<i32>()
+                {
+                    Ok(n) => tokens.push(Token::Value(Value::Number(n))),
+                    Err(_) => return Err(LexerError::Overflow),
+                },
+                'a'..='z' | 'A'..='Z' => tokens.push(Self::read_identifier(self, &mut iter)),
+                ' ' =>
                 {
                     iter.next();
+                    self.advance();
                 }
+                _ => return Err(LexerError::InvalidSimbol(self.position())),
             }
         }
 
@@ -40,49 +63,72 @@ impl Lexer
         Ok(tokens)
     }
 
-    fn read_identifier(iter: &mut Peekable<Chars>) -> Result<Token, LexerError>
+    fn advance(&self)
     {
-        let mut buffer = String::new();
+        self.pos.set(self.pos.get() + 1);
+    }
+
+    fn position(&self) -> usize
+    {
+        self.pos.get()
+    }
+
+    fn read_identifier(&self, iter: &mut Peekable<Chars>) -> Token<'a>
+    {
+        let start = self.position();
 
         loop
         {
-            match iter.next()
+            match iter.peek()
             {
-                Some(' ') | None => return Keywords::lookup(&buffer),
-                Some(ch @ 'a'..='z' | ch @ 'A'..='Z') => buffer.push(ch),
-                Some(_) => return Err(LexerError::CorruptedIdentifier),
+                Some('a'..='z' | 'A'..='Z' | '_' | '0'..='9') =>
+                {
+                    iter.next();
+                }
+                Some(_) | None => return Keywords::lookup(&self.input[start..self.position()]),
             }
+            self.advance();
         }
     }
 
-    fn read_number(iter: &mut Peekable<Chars>) -> Result<String, LexerError>
+    fn read_number(&self, iter: &mut Peekable<Chars>) -> Result<&'a str, LexerError>
     {
-        let mut buffer = String::new();
+        let start = self.position();
 
         loop
         {
-            match iter.next()
+            match iter.peek()
             {
-                Some(' ') | None => return Ok(buffer),
-                Some(ch @ '0'..='9') => buffer.push(ch),
-                Some(_) => return Err(LexerError::CorruptedNumber),
+                Some('0'..='9') =>
+                {
+                    iter.next();
+                }
+                Some('a'..='z' | 'A'..='Z') =>
+                {
+                    return Err(LexerError::CorruptedNumber(self.position()));
+                }
+                Some(_) | None => return Ok(&self.input[start..self.position()]),
             }
+            self.advance();
         }
     }
 
-    fn read_string(iter: &mut Peekable<Chars>) -> Result<String, LexerError>
+    fn read_string(&self, iter: &mut Peekable<Chars>) -> Result<&'a str, LexerError>
     {
         iter.next();
-        let mut buffer = String::new();
+        self.advance();
+        let start = self.position();
 
         loop
         {
             match iter.next()
             {
-                Some('"') => return Ok(buffer),
-                Some(ch) => buffer.push(ch),
+                Some('"') => return Ok(&self.input[start..self.position()]),
+                Some(_) =>
+                {}
                 None => return Err(LexerError::UnterminatedString),
             }
+            self.advance();
         }
     }
 }
