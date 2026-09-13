@@ -2,7 +2,7 @@ use crate::compiler::types::token::{Grammar, Keyword, Value};
 
 pub struct Tree<'a>
 {
-    pub keyword: Keyword<'a>,
+    pub keyword: Keyword,
     pub children: Vec<Child<'a>>,
 }
 

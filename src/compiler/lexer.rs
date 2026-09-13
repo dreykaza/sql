@@ -1,6 +1,6 @@
 use crate::{
     compiler::{
-        lexer::lookup_table::Keywords,
+        lexer::lookup_table::{Grammer, Keywords},
         types::token::{Token, Value},
     },
     error::LexerError,
@@ -49,6 +49,12 @@ impl<'a> Lexer<'a>
                     Err(_) => return Err(LexerError::Overflow),
                 },
                 'a'..='z' | 'A'..='Z' => tokens.push(Self::read_identifier(self, &mut iter)),
+                '(' | ')' | ',' =>
+                {
+                    tokens.push(Grammer::lookup(ch));
+                    self.advance();
+                    iter.next();
+                }
                 ' ' =>
                 {
                     iter.next();

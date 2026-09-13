@@ -10,32 +10,32 @@ struct Parser;
 
 impl Parser
 {
-    pub fn parse(tokens: Vec<Token>) -> Result<Tree, ParserError>
-    {
-        let mut iter = tokens.into_iter().peekable();
-        let mut tree: Tree = Self::create_tree(iter.next())?;
-
-        while let Some(ch) = iter.peek()
-        {
-            match ch
-            {
-                Token::Keyword(_) =>
-                {
-                    return Err(ParserError::TooManyKeywords);
-                }
-                Token::Value(v) =>
-                {}
-                Token::Grammar(g) =>
-                {}
-                Token::EOF =>
-                {
-                    break;
-                }
-            }
-        }
-
-        Ok(tree)
-    }
+    // pub fn parse(tokens: Vec<Token>) -> Result<Tree, ParserError>
+    // {
+    //     let mut iter = tokens.into_iter().peekable();
+    //     let mut tree: Tree = Self::create_tree(iter.next())?;
+    //
+    //     while let Some(ch) = iter.peek()
+    //     {
+    //         match ch
+    //         {
+    //             Token::Keyword(_) =>
+    //             {
+    //                 return Err(ParserError::TooManyKeywords);
+    //             }
+    //             Token::Value(v) =>
+    //             {}
+    //             Token::Grammar(g) =>
+    //             {}
+    //             Token::EOF =>
+    //             {
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //
+    //     Ok(tree)
+    // }
 
     fn create_tree(token: Option<Token>) -> Result<Tree, ParserError>
     {

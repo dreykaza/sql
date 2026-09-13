@@ -1,4 +1,4 @@
-use crate::compiler::types::token::{Grammar, Keyword, Token};
+use crate::compiler::types::token::{Expression, Grammar, Keyword, Token};
 
 pub struct Keywords;
 
@@ -12,9 +12,25 @@ impl<'a> Keywords
         {
             "insert" => Token::Keyword(Keyword::Insert),
             "select" => Token::Keyword(Keyword::Select),
-            "from" => Token::Grammar(Grammar::From),
-            "column" => Token::Grammar(Grammar::Column),
-            _ => Token::Keyword(Keyword::Identifier(word)),
+            "from" => Token::Expression(Expression::From),
+            "column" => Token::Expression(Expression::Column),
+            _ => Token::Identifier(word),
+        }
+    }
+}
+
+pub struct Grammer;
+
+impl<'a> Grammer
+{
+    pub fn lookup(char: char) -> Token<'a>
+    {
+        match char
+        {
+            '(' => Token::Grammar(Grammar::OpenBracket),
+            ')' => Token::Grammar(Grammar::CloaseBracket),
+            ',' => Token::Grammar(Grammar::Comma),
+            _ => unreachable!(),
         }
     }
 }
